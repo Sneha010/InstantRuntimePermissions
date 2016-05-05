@@ -16,21 +16,12 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <activity android:name=".FakeActivity" />
+        <activity android:name=".FakeActivity" android:theme="@style/Theme.Transparent" />
 
-        <receiver android:name=".PleaseRequest$Receiver">
-
-            <intent-filter>
-                <action android:name="com.permission.pleaserequest.PERMISSION_RESULT_INTENT">
-                </action>
-            </intent-filter>
-
-        </receiver>
     </application>
 
 </manifest>

@@ -31,18 +31,19 @@ public class TestActivity extends AppCompatActivity {
 
 
         PleaseRequest.inside(this)
-                .forPermissions(Manifest.permission.ACCESS_COARSE_LOCATION)
+                .forPermissions(Manifest.permission.ACCESS_COARSE_LOCATION
+                        )
                 .withExtraExplanation("Please give me the following permission.")
                 .request(new PleaseRequest.GrantPermissionListener() {
             @Override
             public void grantedPermission(List<String> permissions) {
 
-                Toast.makeText(TestActivity.this, "Granted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TestActivity.this, "Granted ", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void rejected(List<String> permissions) {
-                Toast.makeText(TestActivity.this, "Rejected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TestActivity.this, "Rejected ", Toast.LENGTH_SHORT).show();
 
             }
         });
