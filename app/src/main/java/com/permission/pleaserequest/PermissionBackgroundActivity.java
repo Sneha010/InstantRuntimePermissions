@@ -1,16 +1,17 @@
+/*
 package com.permission.pleaserequest;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.WindowManager;
 
 import java.util.ArrayList;
@@ -19,14 +20,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+*/
 /**
  * User :   Sneha Khadatare
  * Date :   4/29/2016
  * Time :   4:08 PM IST
  *
  * I am calling it fake because it is just to get the callback from new permission framework, not used as Activity.
- */
-public class FakeActivity extends AppCompatActivity {
+ *//*
+
+public class PermissionBackgroundActivity extends AppCompatActivity {
 
     @SuppressWarnings("unused")
     private static final String TAG = FakeActivity.class.getSimpleName();
@@ -38,10 +41,7 @@ public class FakeActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_FOR_PERMISSION = 1;
 
-
-    private String[] mPermissions;
-    private String[] mExtraExplanationMessages;
-
+    private ArrayList<RuntimePermission> mRuntimePermissions ;
 
 
     @Override
@@ -51,36 +51,25 @@ public class FakeActivity extends AppCompatActivity {
         //No need to touch my Fake Activity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-        initializeWithRotationHandling(savedInstanceState);
-    }
-
-    private void initializeWithRotationHandling(Bundle state) {
-
-        if (state != null) {
-            mPermissions = state.getStringArray(Constants.PERMISSIONS);
-            mExtraExplanationMessages = state.getStringArray(Constants.EXTRA_MESSAGES);
-        } else {
-            Intent intent = getIntent();
-            mPermissions = intent.getStringArrayExtra(Constants.PERMISSIONS);
-            mExtraExplanationMessages = intent.getStringArrayExtra(Constants.EXTRA_MESSAGES);
+        if (savedInstanceState != null) {
+            mRuntimePermissions = savedInstanceState.getParcelableArrayList(Constants.PERMISSIONS);
         }
 
         getNeededPermissions();
-
     }
+
 
     //To handle rotation
     @Override
     public void onSaveInstanceState(Bundle state) {
-        state.putStringArray(Constants.PERMISSIONS, mPermissions);
-        state.putStringArray(Constants.EXTRA_MESSAGES, mExtraExplanationMessages);
+        state.putParcelableArrayList(Constants.PERMISSIONS, mRuntimePermissions);
     }
 
 
     //Get Needed permission passed by the user of library
     private void getNeededPermissions() {
 
-        Map<String, List<String>> map = extractAllPermissionsFromReceivedData(mPermissions, mExtraExplanationMessages);
+        Map<String, List<String>> map = extractAllPermissionsFromReceivedData(mRuntimePermissions);
 
         List<String> neededPermissions = map.get(NEEDED_PERMISSIONS);
         final List<String> showRationaleFor = map.get(SHOW_EXPLANATION_FOR);
@@ -92,7 +81,7 @@ public class FakeActivity extends AppCompatActivity {
             showMessageOKCancel(buildExplanationMessageToShow(rationalMessagesToShow), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ActivityCompat.requestPermissions(FakeActivity.this, showRationaleFor.toArray(new String[showRationaleFor.size()]), REQUEST_CODE_FOR_PERMISSION);
+                    ActivityCompat.requestPermissions(PermissionBackgroundActivity.this, showRationaleFor.toArray(new String[showRationaleFor.size()]), REQUEST_CODE_FOR_PERMISSION);
                     dialog.dismiss();
                 }
             });
@@ -116,38 +105,9 @@ public class FakeActivity extends AppCompatActivity {
 
 
     //This method separate out all needed permissions and their messages in separate maps
-    private Map<String, List<String>> extractAllPermissionsFromReceivedData(String[] permissions,
-                                                                            String[] extraExplanationMessages) {
-        Map<String, List<String>> map = new HashMap<>();
-        List<String> neededPermissionsList = new ArrayList<>();
-        List<String> showExplanationForPermissionList = new ArrayList<>();
-        List<String> neededExplanationMessagesList = new ArrayList<>();
+    private void extractAllPermissionsFromReceivedData(ArrayList<RuntimePermission> requestedPermissions) {
 
-        for (int i = 0; i < permissions.length; i++) {
-            String permission = permissions[i];
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                neededPermissionsList.add(permission);
-            }
-
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                showExplanationForPermissionList.add(permission);
-                // if multiple explanation messages corresponding to each permission
-                if (extraExplanationMessages != null &&
-                        extraExplanationMessages.length == permissions.length) {
-                    neededExplanationMessagesList.add(extraExplanationMessages[i]);
-                }
-            }
-
-
-
-        }
-
-        map.put(NEEDED_PERMISSIONS, neededPermissionsList);
-        map.put(SHOW_EXPLANATION_FOR, showExplanationForPermissionList);
-        map.put(EXPLANATION_MESSAGES_TO_SHOW, neededExplanationMessagesList);
-
-        return map;
+        ActivityCompat.requestPermissions(this, requestedPermissions.toArray(new String[requestedPermissions.size()]), REQUEST_CODE_FOR_PERMISSION);
     }
 
 
@@ -169,12 +129,8 @@ public class FakeActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
-        Log.d("!!!", "onRequestPermissionsResult: "+requestCode);
-
         switch (requestCode) {
             case REQUEST_CODE_FOR_PERMISSION: {
-
-
                 broadcastTheResults(permissions, grantResults);
                 finish();
                 //No Animation for finish, it looks bad with fake things
@@ -207,12 +163,5 @@ public class FakeActivity extends AppCompatActivity {
                 .show();
     }
 
-    private List<String> getDenialPermissionExtraMessages(String permissions[], int[] grantResults){
-        List<String> messageList = new ArrayList<>();
-
-        return messageList;
-
-
-    }
-
 }
+*/

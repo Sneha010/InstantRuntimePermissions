@@ -30,24 +30,34 @@ public class TestActivity extends AppCompatActivity {
         });
 
 
+
+
         PleaseRequest.inside(this)
-                .forPermissions(Manifest.permission.ACCESS_COARSE_LOCATION
-                        )
-                .withExtraExplanation("Please give me the following permission.")
+                .forPermissions(new RuntimePermission(Manifest.permission.ACCESS_COARSE_LOCATION , "Please give me the location permission."),
+                        new RuntimePermission( Manifest.permission.WRITE_EXTERNAL_STORAGE ,"Please give me the write permission."))
                 .request(new PleaseRequest.GrantPermissionListener() {
-            @Override
-            public void grantedPermission(List<String> permissions) {
+                    @Override
+                    public void grantedPermission(List<String> permissions) {
 
-                Toast.makeText(TestActivity.this, "Granted ", Toast.LENGTH_SHORT).show();
-            }
+                        if(permissions!=null && permissions.size() > 0){
+                            for (int i = 0; i < permissions.size(); i++) {
+                                Toast.makeText(TestActivity.this, "Granted "+permissions.get(i), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
 
-            @Override
-            public void rejected(List<String> permissions) {
-                Toast.makeText(TestActivity.this, "Rejected ", Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void rejected(List<String> permissions) {
 
-            }
-        });
+                        if(permissions!=null && permissions.size() > 0){
+                            for (int i = 0; i < permissions.size(); i++) {
+                                Toast.makeText(TestActivity.this, "Rejected "+permissions.get(i), Toast.LENGTH_SHORT).show();
+                            }
+                        }
 
+
+                    }
+                });
 
     }
 

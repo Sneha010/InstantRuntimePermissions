@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Size;
 import android.support.v4.content.LocalBroadcastManager;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +27,7 @@ public class PleaseRequest {
     private static GrantPermissionListener mPermissionListener;
 
     private Context mContext;
-    private String[] mPermissions;
-    private String[] mExtraMessages;
+    private List<RuntimePermission> mPermissions;
 
 
     private PermissionResultsBroadCastReceiver mPermissionResultsBroadCastReceiver;
@@ -43,19 +43,13 @@ public class PleaseRequest {
     }
 
 
-    public PleaseRequest forPermissions(@NonNull @Size(min = 1) String... permissions) {
+    public PleaseRequest forPermissions(@NonNull @Size(min = 1) RuntimePermission... permissions) {
 
         if (permissions.length == 0) {
             throw new IllegalArgumentException("Please request for at least one permission.");
         }
-        this.mPermissions = permissions;
+        this.mPermissions = Arrays.asList(permissions);
 
-        return this;
-    }
-
-
-    public PleaseRequest withExtraExplanation(@NonNull String... extraMessages) {
-        this.mExtraMessages = extraMessages;
         return this;
     }
 
@@ -103,6 +97,7 @@ public class PleaseRequest {
             }
 
                 mPermissionListener.rejected(deniedPermissions);
+
 
                 mPermissionListener.grantedPermission(grantedPermissions);
 
