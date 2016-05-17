@@ -31,7 +31,9 @@ public class TestActivity extends AppCompatActivity {
 
 
 
-
+        /*
+        Raise the request as below
+         */
         PleaseRequest.inside(this)
                 .forPermissions(new RuntimePermission(Manifest.permission.ACCESS_COARSE_LOCATION , "Please give me the location permission."),
                         new RuntimePermission( Manifest.permission.WRITE_EXTERNAL_STORAGE ,"Please give me the write permission."))

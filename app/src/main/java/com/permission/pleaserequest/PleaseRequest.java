@@ -41,7 +41,6 @@ public class PleaseRequest {
 
     }
 
-
     public PleaseRequest forPermissions(@NonNull @Size(min = 1) RuntimePermission... permissions) {
 
         if (permissions.length == 0) {

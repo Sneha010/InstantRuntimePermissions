@@ -1,13 +1,14 @@
 package com.permission.pleaserequest;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Size;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +18,6 @@ import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * User :   Sneha Khadatare
@@ -31,7 +30,7 @@ public class FakeActivity extends AppCompatActivity {
 
     @SuppressWarnings("unused")
     private static final String TAG = FakeActivity.class.getSimpleName();
-
+    private static final String PREF_NAME = "PREF_NAME";
 
     private static final String NEEDED_PERMISSIONS = "needed_permissions";
     private static final String SHOW_EXPLANATION_FOR = "explanation_for";
@@ -41,7 +40,7 @@ public class FakeActivity extends AppCompatActivity {
 
 
     private ArrayList<RuntimePermission> mPermissions = new ArrayList<>();
-    private boolean mPermissionCallbackReceived = false;
+    private static final String PERMISSION_CALLBACK_RECEIVE = "PERMISSION_CALLBACK_RECEIVE";
 
 
 
@@ -77,31 +76,9 @@ public class FakeActivity extends AppCompatActivity {
     //Get Needed permission passed by the user of library
     private void getNeededPermissions() {
 
-        Map<String, ArrayList<RuntimePermission>> map = extractAllPermissionsFromReceivedData(mPermissions);
+        if (mPermissions.size() > 0) {
 
-        ArrayList<RuntimePermission> neededPermissions =  map.get(NEEDED_PERMISSIONS);
-        final ArrayList<RuntimePermission> showRationaleFor = map.get(SHOW_EXPLANATION_FOR);
-
-        if (showRationaleFor.size() > 0) {
-
-            showMessageOKCancel(buildExplanationMessageToShow(showRationaleFor), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(FakeActivity.this, extractPermissionFromModel(showRationaleFor), REQUEST_CODE_FOR_PERMISSION);
-                            dialog.dismiss();
-                        }
-                    },
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
-
-
-        } else if (neededPermissions.size() > 0) {
-
-            ActivityCompat.requestPermissions(this, extractPermissionFromModel(neededPermissions), REQUEST_CODE_FOR_PERMISSION);
+            ActivityCompat.requestPermissions(this, extractPermissionFromModel(mPermissions), REQUEST_CODE_FOR_PERMISSION);
         }
         else {
             //All permissions are already granted so finish this with calling listener with grant message
@@ -127,34 +104,6 @@ public class FakeActivity extends AppCompatActivity {
         }
 
         return permissionStringArray;
-    }
-
-
-    //This method separate out all needed permissions and their messages in separate maps
-    private Map<String, ArrayList<RuntimePermission>> extractAllPermissionsFromReceivedData(ArrayList<RuntimePermission> permissions) {
-
-        Map<String, ArrayList<RuntimePermission>> map = new HashMap<>();
-
-        ArrayList<RuntimePermission> neededPermissionsList = new ArrayList<>();
-        ArrayList<RuntimePermission> requestDenialMsgPermissionList = new ArrayList<>();
-
-        for (int i = 0; i < permissions.size(); i++) {
-
-            String permission = permissions.get(i).getPermissionName();
-
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                neededPermissionsList.add(permissions.get(i));
-            }
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                requestDenialMsgPermissionList.add(permissions.get(i));
-            }
-        }
-
-        map.put(NEEDED_PERMISSIONS, neededPermissionsList);
-        map.put(SHOW_EXPLANATION_FOR, requestDenialMsgPermissionList);
-
-        return map;
     }
 
 
@@ -189,11 +138,16 @@ public class FakeActivity extends AppCompatActivity {
 
                 String denialRationalMessages = buildExplanationMessageToShow(resultList);
 
-                if(!TextUtils.isEmpty(denialRationalMessages) && !mPermissionCallbackReceived){
+                Log.d("!!!", "onRequestPermissionsResult: before "+isPermissionCallbackReceive(FakeActivity.this));
+                if(!TextUtils.isEmpty(denialRationalMessages) && !isPermissionCallbackReceive(FakeActivity.this)){
+
+                    setPermissionCallbackReceiveFlag(FakeActivity.this , true);
+                    Log.d("!!!", "onRequestPermissionsResult: after "+isPermissionCallbackReceive(FakeActivity.this));
+
                     showMessageOKCancel(denialRationalMessages, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    mPermissionCallbackReceived = true;
+
                                     ActivityCompat.requestPermissions(FakeActivity.this, extractPermissionFromModel(resultList), REQUEST_CODE_FOR_PERMISSION);
                                     dialog.dismiss();
                                 }
@@ -201,6 +155,7 @@ public class FakeActivity extends AppCompatActivity {
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    broadcastTheResults(permissions, grantResults);
                                     dialog.dismiss();
                                     finish();
                                 }
@@ -209,8 +164,6 @@ public class FakeActivity extends AppCompatActivity {
                     broadcastTheResults(permissions, grantResults);
                     finish();
                 }
-
-
 
                 return;
             }
@@ -263,5 +216,21 @@ public class FakeActivity extends AppCompatActivity {
 
 
     }
+
+    private static SharedPreferences getPreferences(Context context){
+        SharedPreferences prefs = context.getSharedPreferences(
+                PREF_NAME, Context.MODE_PRIVATE);
+        return prefs;
+    }
+
+
+    public static void setPermissionCallbackReceiveFlag(Context context ,boolean isCallbackReceived){
+        getPreferences(context).edit().putBoolean(PERMISSION_CALLBACK_RECEIVE , isCallbackReceived).commit();
+    }
+
+    public static boolean isPermissionCallbackReceive(Context context){
+        return getPreferences(context).getBoolean(PERMISSION_CALLBACK_RECEIVE , false);
+    }
+
 
 }
