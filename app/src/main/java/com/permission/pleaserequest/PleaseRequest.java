@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Size;
 import android.support.v4.content.LocalBroadcastManager;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +26,7 @@ public class PleaseRequest {
     private static GrantPermissionListener mPermissionListener;
 
     private Context mContext;
-    private List<RuntimePermission> mPermissions;
+    private ArrayList<RuntimePermission> mPermissions;
 
 
     private PermissionResultsBroadCastReceiver mPermissionResultsBroadCastReceiver;
@@ -48,7 +47,7 @@ public class PleaseRequest {
         if (permissions.length == 0) {
             throw new IllegalArgumentException("Please request for at least one permission.");
         }
-        this.mPermissions = Arrays.asList(permissions);
+        this.mPermissions = new ArrayList<>(Arrays.asList(permissions));
 
         return this;
     }
@@ -60,11 +59,10 @@ public class PleaseRequest {
 
         //Only Marshmellow with Runtime permission else go with normal flow
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            mPermissionListener.grantedPermission(Arrays.asList(mPermissions));
+            mPermissionListener.grantedPermission(extractPermissionsName(mPermissions));
         } else {
             Intent intent = new Intent(mContext, FakeActivity.class);
-            intent.putExtra(Constants.PERMISSIONS, mPermissions);
-            intent.putExtra(Constants.EXTRA_MESSAGES, mExtraMessages);
+            intent.putParcelableArrayListExtra(Constants.PERMISSIONS, mPermissions);
             mContext.startActivity(intent);
         }
 
@@ -84,10 +82,13 @@ public class PleaseRequest {
     class PermissionResultsBroadCastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+
             String[] permissions = intent.getStringArrayExtra(Constants.PERMISSIONS);
             int[] grantResults = intent.getIntArrayExtra(Constants.GRANT_RESULTS);
+
             List<String> grantedPermissions = new ArrayList<>();
             List<String> deniedPermissions = new ArrayList<>();
+
             for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                     grantedPermissions.add(permissions[i]);
@@ -108,7 +109,17 @@ public class PleaseRequest {
         }
     }
 
+    private List<String> extractPermissionsName(List<RuntimePermission> permissions){
 
+        List<String> permissionList = new ArrayList<>();
+
+        for (int i = 0; i < permissions.size() ; i++) {
+            permissionList.add(permissions.get(i).getPermissionName());
+        }
+
+        return permissionList;
+
+    }
 
     public interface GrantPermissionListener{
 
