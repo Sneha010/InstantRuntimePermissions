@@ -1,4 +1,4 @@
-package com.permission.pleaserequest;
+package com.instant.runtimepermission;
 
 /**
  * User :   Sneha Khadatare
@@ -7,6 +7,7 @@ package com.permission.pleaserequest;
  */
 public class Constants {
 
+    public static String REQUEST_ID = "RequestId";
     public static String PERMISSIONS = "permissions";
     public static String EXTRA_MESSAGES = "extra_message";
     public static String GRANT_RESULTS = "results";

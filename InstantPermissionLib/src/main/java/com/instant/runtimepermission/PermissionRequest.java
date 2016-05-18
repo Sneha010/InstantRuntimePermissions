@@ -1,4 +1,4 @@
-package com.permission.pleaserequest;
+package com.instant.runtimepermission;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,43 +19,41 @@ import java.util.List;
  * Date :   4/29/2016
  * Time :   3:57 PM IST
  */
-public class PleaseRequest {
+public class PermissionRequest {
 
 
     protected static final String PERMISSION_BROADCAST_INTENT = "com.permission.pleaserequest.PERMISSION_RESULT_INTENT";
     private static GrantPermissionListener mPermissionListener;
 
     private Context mContext;
-    private String[] mPermissions;
-    private String[] mExtraMessages;
+    private String mId;
+    private ArrayList<MPermission> mPermissions;
 
 
     private PermissionResultsBroadCastReceiver mPermissionResultsBroadCastReceiver;
 
-    private PleaseRequest(Context context) {
+    private PermissionRequest(Context context) {
         mContext = context;
     }
 
-    public static PleaseRequest inside(Context context){
+    public static PermissionRequest inside(Context context){
 
-        return new PleaseRequest(context);
+        return new PermissionRequest(context);
 
     }
 
+    public PermissionRequest withRequestId(String id){
+        this.mId = id;
+        return this;
+    }
 
-    public PleaseRequest forPermissions(@NonNull @Size(min = 1) String... permissions) {
+    public PermissionRequest forPermissions(@NonNull @Size(min = 1) MPermission... permissions) {
 
         if (permissions.length == 0) {
             throw new IllegalArgumentException("Please request for at least one permission.");
         }
-        this.mPermissions = permissions;
+        this.mPermissions = new ArrayList<>(Arrays.asList(permissions));
 
-        return this;
-    }
-
-
-    public PleaseRequest withExtraExplanation(@NonNull String... extraMessages) {
-        this.mExtraMessages = extraMessages;
         return this;
     }
 
@@ -66,11 +64,11 @@ public class PleaseRequest {
 
         //Only Marshmellow with Runtime permission else go with normal flow
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            mPermissionListener.grantedPermission(Arrays.asList(mPermissions));
+            mPermissionListener.grantedPermission(extractPermissionsName(mPermissions));
         } else {
             Intent intent = new Intent(mContext, FakeActivity.class);
-            intent.putExtra(Constants.PERMISSIONS, mPermissions);
-            intent.putExtra(Constants.EXTRA_MESSAGES, mExtraMessages);
+            intent.putExtra(Constants.REQUEST_ID , mId);
+            intent.putParcelableArrayListExtra(Constants.PERMISSIONS, mPermissions);
             mContext.startActivity(intent);
         }
 
@@ -90,10 +88,13 @@ public class PleaseRequest {
     class PermissionResultsBroadCastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+
             String[] permissions = intent.getStringArrayExtra(Constants.PERMISSIONS);
             int[] grantResults = intent.getIntArrayExtra(Constants.GRANT_RESULTS);
+
             List<String> grantedPermissions = new ArrayList<>();
             List<String> deniedPermissions = new ArrayList<>();
+
             for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                     grantedPermissions.add(permissions[i]);
@@ -104,6 +105,7 @@ public class PleaseRequest {
 
                 mPermissionListener.rejected(deniedPermissions);
 
+
                 mPermissionListener.grantedPermission(grantedPermissions);
 
 
@@ -113,7 +115,17 @@ public class PleaseRequest {
         }
     }
 
+    private List<String> extractPermissionsName(List<MPermission> permissions){
 
+        List<String> permissionList = new ArrayList<>();
+
+        for (int i = 0; i < permissions.size() ; i++) {
+            permissionList.add(permissions.get(i).getPermissionName());
+        }
+
+        return permissionList;
+
+    }
 
     public interface GrantPermissionListener{
 
