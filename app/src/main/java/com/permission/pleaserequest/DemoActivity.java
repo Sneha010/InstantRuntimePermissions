@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-public class TestActivity extends AppCompatActivity {
+public class DemoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +19,7 @@ public class TestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -34,16 +35,17 @@ public class TestActivity extends AppCompatActivity {
         /*
         Raise the request as below
          */
-        PleaseRequest.inside(this)
+        PermissionRequest.inside(this)
+                .withRequestId("LocationAndStorage")
                 .forPermissions(new RuntimePermission(Manifest.permission.ACCESS_COARSE_LOCATION , "Please give me the location permission."),
                         new RuntimePermission( Manifest.permission.WRITE_EXTERNAL_STORAGE ,"Please give me the write permission."))
-                .request(new PleaseRequest.GrantPermissionListener() {
+                .request(new PermissionRequest.GrantPermissionListener() {
                     @Override
                     public void grantedPermission(List<String> permissions) {
 
                         if(permissions!=null && permissions.size() > 0){
                             for (int i = 0; i < permissions.size(); i++) {
-                                Toast.makeText(TestActivity.this, "Granted "+permissions.get(i), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(DemoActivity.this, "Granted "+permissions.get(i), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -53,7 +55,7 @@ public class TestActivity extends AppCompatActivity {
 
                         if(permissions!=null && permissions.size() > 0){
                             for (int i = 0; i < permissions.size(); i++) {
-                                Toast.makeText(TestActivity.this, "Rejected "+permissions.get(i), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(DemoActivity.this, "Rejected "+permissions.get(i), Toast.LENGTH_SHORT).show();
                             }
                         }
 

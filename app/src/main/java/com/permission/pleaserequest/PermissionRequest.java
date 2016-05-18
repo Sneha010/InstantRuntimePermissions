@@ -19,29 +19,35 @@ import java.util.List;
  * Date :   4/29/2016
  * Time :   3:57 PM IST
  */
-public class PleaseRequest {
+public class PermissionRequest {
 
 
     protected static final String PERMISSION_BROADCAST_INTENT = "com.permission.pleaserequest.PERMISSION_RESULT_INTENT";
     private static GrantPermissionListener mPermissionListener;
 
     private Context mContext;
+    private String mId;
     private ArrayList<RuntimePermission> mPermissions;
 
 
     private PermissionResultsBroadCastReceiver mPermissionResultsBroadCastReceiver;
 
-    private PleaseRequest(Context context) {
+    private PermissionRequest(Context context) {
         mContext = context;
     }
 
-    public static PleaseRequest inside(Context context){
+    public static PermissionRequest inside(Context context){
 
-        return new PleaseRequest(context);
+        return new PermissionRequest(context);
 
     }
 
-    public PleaseRequest forPermissions(@NonNull @Size(min = 1) RuntimePermission... permissions) {
+    public PermissionRequest withRequestId(String id){
+        this.mId = id;
+        return this;
+    }
+
+    public PermissionRequest forPermissions(@NonNull @Size(min = 1) RuntimePermission... permissions) {
 
         if (permissions.length == 0) {
             throw new IllegalArgumentException("Please request for at least one permission.");
@@ -61,6 +67,7 @@ public class PleaseRequest {
             mPermissionListener.grantedPermission(extractPermissionsName(mPermissions));
         } else {
             Intent intent = new Intent(mContext, FakeActivity.class);
+            intent.putExtra(Constants.REQUEST_ID , mId);
             intent.putParcelableArrayListExtra(Constants.PERMISSIONS, mPermissions);
             mContext.startActivity(intent);
         }
