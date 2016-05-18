@@ -24,7 +24,6 @@ import java.util.Arrays;
  * User :   Sneha Khadatare
  * Date :   4/29/2016
  * Time :   4:08 PM IST
- * <p/>
  * I am calling it fake because it is just to get the callback from new permission framework, not used as Activity.
  */
 public class FakeActivity extends AppCompatActivity {

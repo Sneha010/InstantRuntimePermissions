@@ -31,7 +31,7 @@ ext {
     libraryName = 'androidpermission'
     artifact = 'androidpermission'
 
-    libraryDescription = 'Allows to add Android Marshmallow runtime permission with just single line of code.'
+    libraryDescription = 'Allow to add Android Marshmallow runtime permission with just single line of code.'
 
     siteUrl = ''
     gitUrl = 'https://github.com/Sneha010/InstantRuntimePermissions.git'
