@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".FakeActivity" android:theme="@style/Theme.Transparent" />
+        <activity android:name="com.instant.runtimepermission.FakeActivity" android:theme="@style/Theme.Transparent" />
 
     </application>
 

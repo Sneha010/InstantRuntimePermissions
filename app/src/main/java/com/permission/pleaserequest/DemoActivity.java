@@ -9,6 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
+import com.instant.runtimepermission.MPermission;
+import com.instant.runtimepermission.PermissionRequest;
+
 import java.util.List;
 
 public class DemoActivity extends AppCompatActivity {
@@ -37,8 +40,8 @@ public class DemoActivity extends AppCompatActivity {
          */
         PermissionRequest.inside(this)
                 .withRequestId("LocationAndStorage")
-                .forPermissions(new RuntimePermission(Manifest.permission.ACCESS_COARSE_LOCATION , "Please give me the location permission."),
-                        new RuntimePermission( Manifest.permission.WRITE_EXTERNAL_STORAGE ,"Please give me the write permission."))
+                .forPermissions(new MPermission(Manifest.permission.ACCESS_COARSE_LOCATION , "Please give me the location permission."),
+                        new MPermission( Manifest.permission.WRITE_EXTERNAL_STORAGE ,"Please give me the write permission."))
                 .request(new PermissionRequest.GrantPermissionListener() {
                     @Override
                     public void grantedPermission(List<String> permissions) {

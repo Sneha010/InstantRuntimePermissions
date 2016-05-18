@@ -1,4 +1,4 @@
-package com.permission.pleaserequest;
+package com.instant.runtimepermission;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,30 +7,30 @@ import android.os.Parcelable;
  * Created by Sneha Khadatare : 587823
  * on 5/13/2016.
  */
-public class RuntimePermission implements Parcelable{
+public class MPermission implements Parcelable{
 
     private String mPermissionName ;
     private String mMessageOnDenial;
 
-    public RuntimePermission(String permissionName, String messageOnDenial) {
+    public MPermission(String permissionName, String messageOnDenial) {
         mPermissionName = permissionName;
         mMessageOnDenial = messageOnDenial;
     }
 
-    protected RuntimePermission(Parcel in) {
+    protected MPermission(Parcel in) {
         mPermissionName = in.readString();
         mMessageOnDenial = in.readString();
     }
 
-    public static final Creator<RuntimePermission> CREATOR = new Creator<RuntimePermission>() {
+    public static final Creator<MPermission> CREATOR = new Creator<MPermission>() {
         @Override
-        public RuntimePermission createFromParcel(Parcel in) {
-            return new RuntimePermission(in);
+        public MPermission createFromParcel(Parcel in) {
+            return new MPermission(in);
         }
 
         @Override
-        public RuntimePermission[] newArray(int size) {
-            return new RuntimePermission[size];
+        public MPermission[] newArray(int size) {
+            return new MPermission[size];
         }
     };
 

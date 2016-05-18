@@ -1,4 +1,4 @@
-package com.permission.pleaserequest;
+package com.instant.runtimepermission;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,7 +35,7 @@ public class FakeActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_FOR_PERMISSION = 1;
 
-    private ArrayList<RuntimePermission> mPermissions = new ArrayList<>();
+    private ArrayList<MPermission> mPermissions = new ArrayList<>();
     private static String mRequestId;
 
 
@@ -90,8 +90,8 @@ public class FakeActivity extends AppCompatActivity {
 
     }
 
-    private ArrayList<RuntimePermission> getNeedPermissions(){
-        ArrayList<RuntimePermission> neededPerList = new ArrayList<>();
+    private ArrayList<MPermission> getNeedPermissions(){
+        ArrayList<MPermission> neededPerList = new ArrayList<>();
 
         for (int i = 0; i < mPermissions.size(); i++) {
 
@@ -105,7 +105,7 @@ public class FakeActivity extends AppCompatActivity {
     }
 
 
-    private String[] extractPermissionFromModel(@NonNull @Size(min = 1) ArrayList<RuntimePermission> perList) {
+    private String[] extractPermissionFromModel(@NonNull @Size(min = 1) ArrayList<MPermission> perList) {
 
         String[] permissionStringArray = new String[perList.size()];
 
@@ -121,11 +121,11 @@ public class FakeActivity extends AppCompatActivity {
     // You can choose symbol from here :)
     //  http://fsymbols.com/signs/stars/
     @NonNull
-    private String buildExplanationMessageToShow(@NonNull ArrayList<RuntimePermission> permissionsList) {
+    private String buildExplanationMessageToShow(@NonNull ArrayList<MPermission> permissionsList) {
 
         StringBuilder sb = new StringBuilder();
 
-        for (RuntimePermission permission : permissionsList) {
+        for (MPermission permission : permissionsList) {
             if (!TextUtils.isEmpty(permission.getMessageOnDenial()))
                 sb.append("✯").append("\u0009").append(permission.getMessageOnDenial()).append("\n");
         }
@@ -144,7 +144,7 @@ public class FakeActivity extends AppCompatActivity {
             case REQUEST_CODE_FOR_PERMISSION: {
 
 
-                final ArrayList<RuntimePermission> resultList = getDenialPermissionExtraMessages(permissions, grantResults);
+                final ArrayList<MPermission> resultList = getDenialPermissionExtraMessages(permissions, grantResults);
 
                 String denialRationalMessages = buildExplanationMessageToShow(resultList);
 
@@ -207,8 +207,8 @@ public class FakeActivity extends AppCompatActivity {
                 .show();
     }
 
-    private ArrayList<RuntimePermission> getDenialPermissionExtraMessages(String permissions[], int[] grantResults) {
-        ArrayList<RuntimePermission> messageList = new ArrayList<>();
+    private ArrayList<MPermission> getDenialPermissionExtraMessages(String permissions[], int[] grantResults) {
+        ArrayList<MPermission> messageList = new ArrayList<>();
 
         for (int i = 0; i < mPermissions.size(); i++) {
             for (int j = 0; j < permissions.length; j++) {

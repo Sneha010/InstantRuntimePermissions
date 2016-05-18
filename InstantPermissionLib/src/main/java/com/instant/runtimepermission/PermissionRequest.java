@@ -1,4 +1,4 @@
-package com.permission.pleaserequest;
+package com.instant.runtimepermission;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,7 +27,7 @@ public class PermissionRequest {
 
     private Context mContext;
     private String mId;
-    private ArrayList<RuntimePermission> mPermissions;
+    private ArrayList<MPermission> mPermissions;
 
 
     private PermissionResultsBroadCastReceiver mPermissionResultsBroadCastReceiver;
@@ -47,7 +47,7 @@ public class PermissionRequest {
         return this;
     }
 
-    public PermissionRequest forPermissions(@NonNull @Size(min = 1) RuntimePermission... permissions) {
+    public PermissionRequest forPermissions(@NonNull @Size(min = 1) MPermission... permissions) {
 
         if (permissions.length == 0) {
             throw new IllegalArgumentException("Please request for at least one permission.");
@@ -115,7 +115,7 @@ public class PermissionRequest {
         }
     }
 
-    private List<String> extractPermissionsName(List<RuntimePermission> permissions){
+    private List<String> extractPermissionsName(List<MPermission> permissions){
 
         List<String> permissionList = new ArrayList<>();
 

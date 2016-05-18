@@ -1,4 +1,4 @@
-package com.permission.pleaserequest;
+package com.instant.runtimepermission;
 
 /**
  * User :   Sneha Khadatare
